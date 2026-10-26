@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Heart, Menu, X, Shield, Sparkles } from 'lucide-react';
+import { ShoppingBag, Heart, Menu, X, Shield, Sparkles, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export default function Navbar() {
@@ -15,11 +15,23 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Prevent background scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
@@ -30,275 +42,374 @@ export default function Navbar() {
           left: 0,
           right: 0,
           zIndex: 60,
-          padding: isScrolled ? '14px 5vw' : '22px 5vw',
-          backgroundColor: isScrolled ? 'rgba(7, 19, 11, 0.92)' : 'transparent',
-          backdropFilter: isScrolled ? 'blur(16px)' : 'none',
-          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'none',
-          borderBottom: isScrolled ? '1px solid var(--line)' : '1px solid transparent',
-          transition: 'all 0.35s ease',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          padding: isScrolled ? '12px 5vw' : '18px 5vw',
+          backgroundColor: isScrolled ? 'rgba(7, 19, 11, 0.94)' : 'rgba(7, 19, 11, 0.75)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: isScrolled ? '1px solid var(--line)' : '1px solid rgba(212, 175, 55, 0.08)',
+          transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
         }}
       >
-        {/* Brand Logo */}
-        <Link
-          href="/"
+        <div
           style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
             display: 'flex',
             alignItems: 'center',
-            textDecoration: 'none',
+            justifyContent: 'space-between',
+            position: 'relative',
+            width: '100%',
           }}
         >
-          <div
+          {/* Mobile Spacer to balance layout so logo stays centered */}
+          <div className="mobile-only" style={{ width: '42px', flexShrink: 0 }} />
+
+          {/* Brand Logo - Centered on mobile via CSS, Left-aligned on desktop */}
+          <Link
+            href="/"
+            className="navbar-brand-logo"
             style={{
-              background: '#f8f4e9',
-              borderRadius: '10px',
-              padding: '3px 10px',
               display: 'flex',
               alignItems: 'center',
-              border: '1px solid rgba(212, 175, 55, 0.4)',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.35)',
+              textDecoration: 'none',
               transition: 'transform 0.2s ease',
             }}
           >
             <Image
-              src="/images/logo.png"
+              src="/images/logo-gold.png"
               alt="Keyaar Premium Spices"
-              width={130}
-              height={44}
+              width={160}
+              height={52}
               priority
               style={{
                 objectFit: 'contain',
-                height: '36px',
+                height: '42px',
                 width: 'auto',
+                filter: 'drop-shadow(0 2px 10px rgba(212, 175, 55, 0.35)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9))',
               }}
             />
-          </div>
-        </Link>
+          </Link>
 
-        {/* Desktop Links */}
-        <div
-          style={{
-            display: 'none',
-            gap: '32px',
-            alignItems: 'center',
-            fontSize: '0.92rem',
-            color: 'var(--ivory)',
-          }}
-          className="desktop-links"
-        >
-          <Link
-            href="/shop"
+          {/* Desktop Navigation Links */}
+          <div
+            className="desktop-links"
             style={{
-              color: pathname === '/shop' ? 'var(--gold-light)' : 'var(--ivory)',
-              transition: 'color 0.2s',
-            }}
-          >
-            Collection
-          </Link>
-          <Link href="/#sensory" style={{ transition: 'color 0.2s' }}>
-            Sensory Journey
-          </Link>
-          <Link href="/#process" style={{ transition: 'color 0.2s' }}>
-            Our Craft
-          </Link>
-          <Link href="/track-order" style={{ transition: 'color 0.2s' }}>
-            Track Order
-          </Link>
-          <Link
-            href="/admin"
-            style={{
-              display: 'inline-flex',
+              gap: '32px',
               alignItems: 'center',
-              gap: '6px',
-              padding: '6px 14px',
-              borderRadius: '20px',
-              border: '1px solid var(--line)',
-              background: 'rgba(95, 124, 58, 0.2)',
-              color: '#d0dfb6',
-              fontSize: '0.82rem',
-              fontWeight: 500,
+              fontSize: '0.92rem',
+              color: 'var(--ivory)',
             }}
           >
-            <Shield size={14} /> Admin
-          </Link>
-        </div>
+            <Link
+              href="/shop"
+              style={{
+                color: pathname === '/shop' ? 'var(--gold-light)' : 'var(--ivory)',
+                fontWeight: pathname === '/shop' ? 600 : 400,
+                transition: 'color 0.2s',
+              }}
+            >
+              Collection
+            </Link>
+            <Link href="/#sensory" style={{ transition: 'color 0.2s' }}>
+              Sensory Journey
+            </Link>
+            <Link href="/#process" style={{ transition: 'color 0.2s' }}>
+              Our Craft
+            </Link>
+            <Link href="/track-order" style={{ transition: 'color 0.2s' }}>
+              Track Order
+            </Link>
+            <Link
+              href="/admin"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 14px',
+                borderRadius: '20px',
+                border: '1px solid var(--line)',
+                background: 'rgba(95, 124, 58, 0.2)',
+                color: '#d0dfb6',
+                fontSize: '0.82rem',
+                fontWeight: 500,
+              }}
+            >
+              <Shield size={14} /> Admin
+            </Link>
+          </div>
 
-        {/* Actions (Wishlist, Cart, Mobile Toggle) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Wishlist Link */}
-          <Link
-            href="/shop?filter=wishlist"
-            className="btn-icon"
-            title="Wishlist"
-            style={{ position: 'relative' }}
+          {/* Action Icons: Wishlist & Cart & Toggle Menu Aligned Nearest */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}
           >
-            <Heart size={18} fill={wishlist.length > 0 ? 'var(--gold)' : 'none'} color={wishlist.length > 0 ? 'var(--gold)' : 'var(--ivory)'} />
-            {wishlist.length > 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '-4px',
-                  right: '-4px',
-                  background: 'var(--gold)',
-                  color: '#120e03',
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {wishlist.length}
-              </span>
-            )}
-          </Link>
+            {/* Wishlist Link */}
+            <Link
+              href="/shop?filter=wishlist"
+              className="btn-icon"
+              title="Wishlist"
+              style={{
+                position: 'relative',
+                width: '38px',
+                height: '38px',
+              }}
+            >
+              <Heart
+                size={17}
+                fill={wishlist.length > 0 ? 'var(--gold)' : 'none'}
+                color={wishlist.length > 0 ? 'var(--gold)' : 'var(--ivory)'}
+              />
+              {wishlist.length > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    right: '-4px',
+                    background: 'var(--gold)',
+                    color: '#120e03',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    width: '17px',
+                    height: '17px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {wishlist.length}
+                </span>
+              )}
+            </Link>
 
-          {/* Cart Button */}
-          <button
-            onClick={openCart}
-            className="btn-icon"
-            title="Shopping Cart"
-            style={{ position: 'relative' }}
-          >
-            <ShoppingBag size={18} />
-            {totalItems > 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '-4px',
-                  right: '-4px',
-                  background: 'var(--gold)',
-                  color: '#120e03',
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 0 10px var(--gold-glow)',
-                }}
-              >
-                {totalItems}
-              </span>
-            )}
-          </button>
+            {/* Shopping Cart Button */}
+            <button
+              onClick={openCart}
+              className="btn-icon"
+              title="Shopping Cart"
+              style={{
+                position: 'relative',
+                width: '38px',
+                height: '38px',
+              }}
+            >
+              <ShoppingBag size={17} />
+              {totalItems > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    right: '-4px',
+                    background: 'var(--gold)',
+                    color: '#120e03',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    width: '17px',
+                    height: '17px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 0 10px var(--gold-glow)',
+                  }}
+                >
+                  {totalItems}
+                </span>
+              )}
+            </button>
 
-          {/* Shop Spices CTA */}
-          <Link href="/shop" className="btn btn-primary btn-sm desktop-only">
-            <Sparkles size={14} /> Shop Spices
-          </Link>
+            {/* Shop Spices CTA (Desktop only - Hidden on mobile) */}
+            <Link href="/shop" className="btn btn-primary btn-sm desktop-only">
+              <Sparkles size={14} /> Shop Spices
+            </Link>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="btn-icon mobile-only"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+            {/* Mobile Hamburger Toggle (Right next to Wishlist & Cart) */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="btn-icon mobile-only"
+              aria-label="Toggle menu"
+              style={{
+                width: '38px',
+                height: '38px',
+                background: 'rgba(212, 175, 55, 0.12)',
+                borderColor: 'var(--line-strong)',
+                color: 'var(--gold-light)',
+              }}
+            >
+              {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu (Slide-out Overlay) */}
       {isMobileMenuOpen && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
             background: 'rgba(7, 19, 11, 0.98)',
-            backdropFilter: 'blur(20px)',
-            zIndex: 55,
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            zIndex: 80,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '28px',
-            padding: '24px',
-            fontSize: '1.4rem',
-            fontFamily: 'var(--font-serif)',
+            justifyContent: 'space-between',
+            padding: '24px 6vw 36px',
+            overflowY: 'auto',
           }}
         >
+          {/* Drawer Top Header with Centered Gold Logo & Close Button */}
           <div
             style={{
-              background: '#f8f4e9',
-              borderRadius: '12px',
-              padding: '6px 14px',
-              marginBottom: '10px',
-              border: '1px solid rgba(212, 175, 55, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid var(--line)',
+              paddingBottom: '18px',
             }}
           >
             <Image
-              src="/images/logo.png"
+              src="/images/logo-gold.png"
               alt="Keyaar Premium Spices"
               width={150}
               height={50}
-              style={{ objectFit: 'contain', height: '44px', width: 'auto' }}
+              style={{
+                objectFit: 'contain',
+                height: '44px',
+                width: 'auto',
+                filter: 'drop-shadow(0 2px 10px rgba(212, 175, 55, 0.35))',
+              }}
             />
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="btn-icon"
+              aria-label="Close menu"
+              style={{
+                width: '40px',
+                height: '40px',
+                border: '1px solid var(--line-strong)',
+                background: 'rgba(212, 175, 55, 0.15)',
+                color: 'var(--gold-light)',
+              }}
+            >
+              <X size={20} />
+            </button>
           </div>
-          <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
-            Collection
-          </Link>
-          <Link href="/#sensory" onClick={() => setIsMobileMenuOpen(false)}>
-            Sensory Journey
-          </Link>
-          <Link href="/#process" onClick={() => setIsMobileMenuOpen(false)}>
-            Our Craft
-          </Link>
-          <Link href="/track-order" onClick={() => setIsMobileMenuOpen(false)}>
-            Track Order
-          </Link>
-          <Link
-            href="/admin"
-            onClick={() => setIsMobileMenuOpen(false)}
+
+          {/* Drawer Navigation Links */}
+          <div
             style={{
-              fontSize: '1rem',
-              color: 'var(--gold-light)',
               display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
+              flexDirection: 'column',
+              gap: '24px',
+              padding: '28px 0',
+              fontFamily: 'var(--font-serif)',
+              fontSize: '1.35rem',
             }}
           >
-            <Shield size={18} /> Admin Dashboard
-          </Link>
-          <Link
-            href="/shop"
-            className="btn btn-primary"
-            style={{ marginTop: '16px', fontSize: '1rem' }}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Explore Spices
-          </Link>
+            <Link
+              href="/shop"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                color: pathname === '/shop' ? 'var(--gold-light)' : 'var(--ivory)',
+              }}
+            >
+              <span>The Collection</span>
+              <ArrowRight size={18} color="var(--gold)" />
+            </Link>
+            <Link
+              href="/#sensory"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span>Sensory Journey</span>
+              <ArrowRight size={18} color="var(--gold)" />
+            </Link>
+            <Link
+              href="/#process"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span>Artisan Craft</span>
+              <ArrowRight size={18} color="var(--gold)" />
+            </Link>
+            <Link
+              href="/track-order"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span>Track Order</span>
+              <ArrowRight size={18} color="var(--gold)" />
+            </Link>
+            <Link
+              href="/admin"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '1.05rem',
+                color: '#c9dba9',
+                fontFamily: 'var(--font-sans)',
+                paddingTop: '6px',
+              }}
+            >
+              <Shield size={18} /> Admin Management
+            </Link>
+          </div>
+
+          {/* Prominent Shop Spices Button inside Side Navigation as requested */}
+          <div style={{ paddingTop: '10px' }}>
+            <Link
+              href="/shop"
+              className="btn btn-primary btn-lg"
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                fontSize: '1.05rem',
+                fontWeight: 600,
+                boxShadow: '0 6px 24px rgba(212, 175, 55, 0.35)',
+              }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Sparkles size={18} /> Shop Spices Catalog
+            </Link>
+            <p
+              style={{
+                textAlign: 'center',
+                color: 'var(--mute)',
+                fontSize: '0.8rem',
+                marginTop: '14px',
+                letterSpacing: '0.04em',
+              }}
+            >
+              100% Hand-Graded • Single-Origin • Kerala, India
+            </p>
+          </div>
         </div>
       )}
-
-      <style jsx>{`
-        @media (min-width: 900px) {
-          .desktop-links {
-            display: flex !important;
-          }
-          .desktop-only {
-            display: inline-flex !important;
-          }
-          .mobile-only {
-            display: none !important;
-          }
-        }
-        @media (max-width: 899px) {
-          .desktop-only {
-            display: none !important;
-          }
-          .mobile-only {
-            display: inline-flex !important;
-          }
-        }
-      `}</style>
     </>
   );
 }

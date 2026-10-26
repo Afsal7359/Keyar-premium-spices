@@ -301,3 +301,62 @@ em {
   border-color: var(--gold);
   font-weight: 600;
 }
+
+/* Responsive Display Utilities */
+.desktop-only {
+  display: inline-flex !important;
+}
+.desktop-links {
+  display: flex !important;
+}
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 899px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .desktop-links {
+    display: none !important;
+  }
+  .mobile-only {
+    display: inline-flex !important;
+  }
+  .navbar-brand-logo {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Sensory Showcase Responsive Utilities */
+.sensory-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .sensory-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+  }
+  .sensory-visual-col {
+    order: 1 !important;
+    margin-bottom: 8px !important;
+  }
+  .sensory-content-col {
+    order: 2 !important;
+    text-align: center !important;
+  }
+  .sensory-notes-wrap {
+    justify-content: center !important;
+  }
+  .sensory-ctas-wrap {
+    justify-content: center !important;
+  }
+}
+
