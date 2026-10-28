@@ -32,24 +32,18 @@ export default function Footer() {
               marginBottom: '20px',
             }}
           >
-            <div
+            <Image
+              src="/images/logo-gold.png"
+              alt="Keyaar Premium Spices"
+              width={160}
+              height={52}
               style={{
-                display: 'inline-flex',
-                background: '#f8f4e9',
-                borderRadius: '10px',
-                padding: '4px 12px',
-                border: '1px solid rgba(212, 175, 55, 0.4)',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.35)',
+                objectFit: 'contain',
+                height: '42px',
+                width: 'auto',
+                filter: 'drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3))',
               }}
-            >
-              <Image
-                src="/images/logo.png"
-                alt="Keyaar Premium Spices"
-                width={140}
-                height={48}
-                style={{ objectFit: 'contain', height: '38px', width: 'auto' }}
-              />
-            </div>
+            />
           </div>
           <p style={{ lineHeight: 1.7, marginBottom: '20px' }}>
             Single-origin whole spices harvested exclusively at peak oil maturity.
@@ -132,7 +126,7 @@ export default function Footer() {
               <Link href="/#process">Our 4-Step Quality Craft</Link>
             </li>
             <li>
-              <Link href="/admin">Merchant & Admin Portal</Link>
+              <Link href="/#sensory">Botanical Sensory Journey</Link>
             </li>
             <li style={{ color: 'var(--ivory-muted)' }}>
               Concierge: concierge@keyaarspices.com

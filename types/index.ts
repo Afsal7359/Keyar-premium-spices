@@ -90,3 +90,23 @@ export interface Review {
   verified: boolean;
   created_at: string;
 }
+
+export interface SiteSettings {
+  announcement_bar: string;
+  free_shipping_threshold: number;
+  hero_badge: string;
+  hero_title: string;
+  hero_subtitle: string;
+  contact_email: string;
+  contact_phone: string;
+  contact_address: string;
+  craft_step_1_title: string;
+  craft_step_1_desc: string;
+  craft_step_2_title: string;
+  craft_step_2_desc: string;
+  craft_step_3_title: string;
+  craft_step_3_desc: string;
+  craft_step_4_title: string;
+  craft_step_4_desc: string;
+}
+

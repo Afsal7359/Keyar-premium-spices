@@ -2,13 +2,13 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Sparkles, Award, ShieldCheck, Star, PackageCheck } from 'lucide-react';
-import { getProducts } from '@/lib/db';
+import { getProducts, getSiteSettings } from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
 import SensoryMarquee from '@/components/SensoryMarquee';
 import SensoryShowcase from '@/components/SensoryShowcase';
 
 export default async function HomePage() {
-  const products = await getProducts();
+  const [products, siteSettings] = await Promise.all([getProducts(), getSiteSettings()]);
   const featuredProducts = products.filter((p) => p.is_featured);
 
   return (
@@ -43,7 +43,7 @@ export default async function HomePage() {
               marginBottom: '24px',
             }}
           >
-            <Sparkles size={14} /> 2026 Single Origin Reserve
+            <Sparkles size={14} /> {siteSettings.hero_badge || '2026 Single Origin Reserve'}
           </div>
 
           <h1
@@ -54,7 +54,7 @@ export default async function HomePage() {
               marginBottom: '24px',
             }}
           >
-            Whole spices, picked at their <em>golden hour.</em>
+            {siteSettings.hero_title || 'Whole spices, picked at their golden hour.'}
           </h1>
 
           <p
@@ -65,8 +65,8 @@ export default async function HomePage() {
               marginBottom: '36px',
             }}
           >
-            Single-origin green cardamom, black pepper, clove and nutmeg flower.
-            Graded by hand, sealed fresh, and packed in nitrogen-purged pouches from 50 g to 1 kg.
+            {siteSettings.hero_subtitle ||
+              'Single-origin green cardamom, black pepper, clove and nutmeg flower. Graded by hand, sealed fresh, and packed in nitrogen-purged pouches from 50 g to 1 kg.'}
           </p>
 
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
@@ -329,40 +329,40 @@ export default async function HomePage() {
               <div style={{ padding: '24px 0', borderTop: '1px solid rgba(255, 255, 255, 0.25)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                   <span style={{ color: 'var(--gold-light)', fontWeight: 600, fontFamily: 'var(--font-cond)' }}>01</span>
-                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>Picked Ripe</h3>
+                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>{siteSettings.craft_step_1_title || 'Picked Ripe'}</h3>
                 </div>
                 <p style={{ opacity: 0.85, fontSize: '0.98rem' }}>
-                  Pods, berries and buds are harvested exclusively when their essential oils and terpenes are at absolute seasonal saturation.
+                  {siteSettings.craft_step_1_desc || 'Pods, berries and buds are harvested exclusively when their essential oils and terpenes are at absolute seasonal saturation.'}
                 </p>
               </div>
 
               <div style={{ padding: '24px 0', borderTop: '1px solid rgba(255, 255, 255, 0.25)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                   <span style={{ color: 'var(--gold-light)', fontWeight: 600, fontFamily: 'var(--font-cond)' }}>02</span>
-                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>Dried Slowly</h3>
+                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>{siteSettings.craft_step_2_title || 'Graded by Eye & Sieve'}</h3>
                 </div>
                 <p style={{ opacity: 0.85, fontSize: '0.98rem' }}>
-                  Gentle, low-temperature ambient curing locks in vibrant natural chlorophyll and volatile essential oils without scorching delicate notes.
+                  {siteSettings.craft_step_2_desc || 'Every batch is mechanically vibrated through calibrated sieves (e.g. 8mm+ for cardamom) then visually inspected by heritage graders.'}
                 </p>
               </div>
 
               <div style={{ padding: '24px 0', borderTop: '1px solid rgba(255, 255, 255, 0.25)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                   <span style={{ color: 'var(--gold-light)', fontWeight: 600, fontFamily: 'var(--font-cond)' }}>03</span>
-                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>Graded by Hand</h3>
+                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>{siteSettings.craft_step_3_title || 'Sun-Dried & Flushed'}</h3>
                 </div>
                 <p style={{ opacity: 0.85, fontSize: '0.98rem' }}>
-                  Every batch passes through cold-stone sorting frames to guarantee uniform pod size (8mm+ caliper), heavy density, and zero hollow buds.
+                  {siteSettings.craft_step_3_desc || 'Slowly dried at regulated moisture levels and sealed with pure food-grade nitrogen to eliminate volatile oxidation.'}
                 </p>
               </div>
 
               <div style={{ padding: '24px 0', borderTop: '1px solid rgba(255, 255, 255, 0.25)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                   <span style={{ color: 'var(--gold-light)', fontWeight: 600, fontFamily: 'var(--font-cond)' }}>04</span>
-                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>Sealed Fresh</h3>
+                  <h3 style={{ fontSize: '1.45rem', margin: 0 }}>{siteSettings.craft_step_4_title || 'Direct from Kerala'}</h3>
                 </div>
                 <p style={{ opacity: 0.85, fontSize: '0.98rem' }}>
-                  Hermetically packed in multi-ply, light-shielded, nitrogen-purged resealable pouches (50g to 1kg) to halt oxidation completely.
+                  {siteSettings.craft_step_4_desc || 'No middle auctions, no sitting in damp warehouses for months. Dispatched straight from estate packing houses to your door.'}
                 </p>
               </div>
             </div>

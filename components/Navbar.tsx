@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Heart, Menu, X, Shield, Sparkles, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Heart, Menu, X, Sparkles, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export default function Navbar() {
@@ -118,23 +118,6 @@ export default function Navbar() {
             </Link>
             <Link href="/track-order" style={{ transition: 'color 0.2s' }}>
               Track Order
-            </Link>
-            <Link
-              href="/admin"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 14px',
-                borderRadius: '20px',
-                border: '1px solid var(--line)',
-                background: 'rgba(95, 124, 58, 0.2)',
-                color: '#d0dfb6',
-                fontSize: '0.82rem',
-                fontWeight: 500,
-              }}
-            >
-              <Shield size={14} /> Admin
             </Link>
           </div>
 
@@ -359,21 +342,6 @@ export default function Navbar() {
             >
               <span>Track Order</span>
               <ArrowRight size={18} color="var(--gold)" />
-            </Link>
-            <Link
-              href="/admin"
-              onClick={() => setIsMobileMenuOpen(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '1.05rem',
-                color: '#c9dba9',
-                fontFamily: 'var(--font-sans)',
-                paddingTop: '6px',
-              }}
-            >
-              <Shield size={18} /> Admin Management
             </Link>
           </div>
 

@@ -1,12 +1,13 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { INITIAL_PRODUCTS, INITIAL_COUPONS, INITIAL_ORDERS, INITIAL_REVIEWS } from './mock-data';
-import { Product, Coupon, Order, Review } from '@/types';
+import { Product, Coupon, Order, Review, SiteSettings } from '@/types';
 
 const STORAGE_KEYS = {
   PRODUCTS: 'keyaar_products_v1',
   COUPONS: 'keyaar_coupons_v1',
   ORDERS: 'keyaar_orders_v1',
   REVIEWS: 'keyaar_reviews_v1',
+  SITE_SETTINGS: 'keyaar_site_settings_v1',
 };
 
 // Safe LocalStorage helpers
@@ -353,3 +354,52 @@ export async function addReview(review: Partial<Review>): Promise<Review> {
   setLocalItem(STORAGE_KEYS.REVIEWS, current);
   return newReview;
 }
+
+// ---------------- ORDERS (DELETE / FULL UPDATE) ----------------
+export async function deleteOrder(orderId: string): Promise<boolean> {
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { error } = await supabase.from('orders').delete().eq('id', orderId);
+      if (!error) return true;
+    } catch (err) {
+      console.warn('Supabase deleteOrder error:', err);
+    }
+  }
+
+  const current = getLocalItem<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+  const updated = current.filter((o) => o.id !== orderId);
+  setLocalItem(STORAGE_KEYS.ORDERS, updated);
+  return true;
+}
+
+// ---------------- SITE SETTINGS & CONTENT CMS ----------------
+export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+  announcement_bar: 'Complimentary Nitrogen-Shield Freshness Pouch on all orders across India',
+  free_shipping_threshold: 999,
+  hero_badge: 'Direct Terroir Sourcing • Kerala, India',
+  hero_title: 'Single-Origin Whole Spices, Graded by Hand & Sealed Fresh',
+  hero_subtitle: 'We source exclusively from micro-plantations in the High Ranges of Kerala. Each spice is harvested mature, cold-graded, and hermetically sealed to preserve volatile essential oils.',
+  contact_email: 'concierge@keyaarspices.com',
+  contact_phone: '+91 98470 12345',
+  contact_address: 'Keyaar Plantations, Vandanmedu, Idukki District, Kerala 685551',
+  craft_step_1_title: 'Picked Ripe',
+  craft_step_1_desc: 'Pods, berries and buds are harvested exclusively when their essential oils and terpenes are at absolute seasonal saturation.',
+  craft_step_2_title: 'Graded by Eye & Sieve',
+  craft_step_2_desc: 'Every batch is mechanically vibrated through calibrated sieves (e.g. 8mm+ for cardamom) then visually inspected by heritage graders.',
+  craft_step_3_title: 'Sun-Dried & Flushed',
+  craft_step_3_desc: 'Slowly dried at regulated moisture levels and sealed with pure food-grade nitrogen to eliminate volatile oxidation.',
+  craft_step_4_title: 'Direct from Kerala',
+  craft_step_4_desc: 'No middle auctions, no sitting in damp warehouses for months. Dispatched straight from estate packing houses to your door.',
+};
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  return getLocalItem<SiteSettings>(STORAGE_KEYS.SITE_SETTINGS, DEFAULT_SITE_SETTINGS);
+}
+
+export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise<SiteSettings> {
+  const current = await getSiteSettings();
+  const updated: SiteSettings = { ...current, ...settings };
+  setLocalItem(STORAGE_KEYS.SITE_SETTINGS, updated);
+  return updated;
+}
+
